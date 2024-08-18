@@ -6,6 +6,8 @@ import net.javaproject.registration_login.entity.User;
 import net.javaproject.registration_login.repository.RoleRepository;
 import net.javaproject.registration_login.repository.UserRepository;
 import net.javaproject.registration_login.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -17,6 +19,18 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
@@ -29,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDto.getFirstName()+" "+ userDto.getLastName());
         user.setEmail(userDto.getEmail());
         //encrypt the password using spring security
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Role role  = roleRepository.findByName("ROLE_ADMIN");
         if(role==null){

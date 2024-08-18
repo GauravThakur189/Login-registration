@@ -26,6 +26,12 @@ public class AuthController {
     public String home(){
         return "index";
     }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
     // handler method to handle user registration
     @GetMapping("/register")
     public String registrationForm(Model model){

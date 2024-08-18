@@ -9,6 +9,8 @@ import net.javaproject.registration_login.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,6 +39,28 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
     }
+
+    @Override
+    public User findByEmail(String email) {
+       return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<UserDto> getUsers() {
+          List<User> users= userRepository.findAll();
+        return   users.stream().map((user)->mapToUserDto(user))
+                .collect(Collectors.toList());
+
+    }
+    private UserDto mapToUserDto(User user){
+        UserDto userDto = new UserDto();
+        String[] str = user.getName().split(" ");
+        userDto.setFirstName(str[0]);
+        userDto.setLastName(str[1]);
+        userDto.setEmail(user.getEmail());
+        return userDto;
+    }
+
     private  Role checkRoleExist(){
         Role role = new Role();
         role.setName("ROLE_ADMIN");
